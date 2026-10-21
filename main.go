@@ -17,6 +17,7 @@ func main() {
 	mux.HandleFunc("POST /products", productHandler.CreateProduct)
 	mux.HandleFunc("GET /products", productHandler.GetProducts)
 	mux.HandleFunc("GET /products/{id}", productHandler.GetProductByID)
+	mux.HandleFunc("PUT /products/{id}", productHandler.UpdateProduct)
 	mux.HandleFunc("DELETE /products/{id}", productHandler.DeleteProduct)
 
 	log.Println("Servidor rodando na porta 8080...")

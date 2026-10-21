@@ -45,6 +45,20 @@ func (r *ProductRepository) FindByID(id string) (models.Product, error) {
 	return p, nil
 }
 
+func (r *ProductRepository) Update(id string, p models.Product) (models.Product, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if _, exists := r.products[id]; !exists {
+		return models.Product{}, errors.New("Produto não encontrado.")
+	}
+
+	p.ID = id
+	r.products[id] = p
+
+	return p, nil
+}
+
 func (r *ProductRepository) Delete(id string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
