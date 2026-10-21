@@ -1,34 +1,26 @@
 package main
 
 import (
-	"encoding/json"
+	"log"
+	"minha-api-go/handlers"
+	"minha-api-go/repository"
 	"net/http"
 )
 
-type Response struct {
-	Status string `json:"status"`
-	Message string `json:"message"`
-	Author string `json:"author"`
-}
-
 func main() {
+	repo := repository.NewProductRepository()
+
+	productHandler := handlers.NewProductHandler(repo)
+
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/hello", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("COntent-type", "application/json")
-		w.WriteHeader(http.StatusOK)
+	mux.HandleFunc("POST /products", productHandler.CreateProduct)
+	mux.HandleFunc("GET /products", productHandler.GetProducts)
+	mux.HandleFunc("GET /products/{id}", productHandler.GetProductByID)
+	mux.HandleFunc("DELETE /products/{id}", productHandler.DeleteProduct)
 
-		data := Response{
-			Status: "success",
-			Message: "Olá! Bem-vindo a minha primeira API em GO",
-			Author: "Vitor H.",
-		}
-
-		json.NewEncoder(w).Encode(data)
-	})
-
-	println("Servidor rodando na porta 8080...")
+	log.Println("Servidor rodando na porta 8080...")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
